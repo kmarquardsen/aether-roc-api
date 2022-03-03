@@ -6,7 +6,7 @@ This micro-service provides a REST interface in front of [aether-config] when ru
 * [Aether 4.0.0]
 * [Aether 2.0.0]
 
-`aether-config` exposes a [gNMI] interface on its Northbound, but is is very abstract 
+`aether-config` exposes a [gNMI] interface on its Northbound, but it is very abstract 
 and requires detailed knowledge of the underlying YANG models
 to be able to use it as an API.
 
@@ -126,7 +126,7 @@ curl --location --request PATCH 'http://aether-roc-api/aether-roc-api' \
 ```
 
 ## Implementation
-The OpenAPI 3 YAML files in `./api` are generated from config models, e.g. [openapi-gen.go](https://github.com/onosproject/config-models/blob/master/modelplugin/aether-2.0.0/cmd/openapi-gen.go)
+The OpenAPI 3 YAML files in `./api` are generated from config models, e.g. [openapi-gen.go](https://github.com/onosproject/config-models/blob/master/pkg/openapi-gen/openapi-gen.go)
 
 Much of the implementation is driven through code generation using DeepMap [oapi-codegen].
 e.g. `make oapi-codegen-aether-2.0.0`
