@@ -37,6 +37,7 @@ func main() {
 	keyPath := flag.String("keyPath", "", "path to client private key")
 	certPath := flag.String("certPath", "", "path to client certificate")
 	gnmiEndpoint := flag.String("gnmiendpoint", "onos-config:5150", "address of onos-config")
+	analyticsEndpoint := flag.String("analyticsendpoint", "localhost:9090", "prometheus address")
 	port := flag.Uint("port", 8181, "http port")
 	validateResp := flag.Bool("validateResp", true, "Validate response are compliant with OpenAPI3 schema")
 	flag.Parse()
@@ -60,7 +61,7 @@ func main() {
 		log.Infof("Authorization not enabled %s", os.Getenv(OIDCServerURL))
 	}
 
-	mgr, err := manager.NewManager(*gnmiEndpoint, allowCorsOrigins, *validateResp, authorization, opts...)
+	mgr, err := manager.NewManager(*gnmiEndpoint, *analyticsEndpoint, allowCorsOrigins, *validateResp, authorization, opts...)
 	if err != nil {
 		log.Fatal(err)
 		os.Exit(-1)
