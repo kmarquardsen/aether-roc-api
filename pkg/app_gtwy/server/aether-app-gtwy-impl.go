@@ -13,6 +13,7 @@ import (
 	"github.com/openconfig/gnmi/proto/gnmi"
 	"github.com/prometheus/common/model"
 	"net/http"
+	"time"
 )
 
 // Implement the Server Interface for access to gNMI
@@ -21,6 +22,7 @@ var log = logging.GetLogger("app_gtwy")
 // Server -
 type Server struct {
 	GnmiClient      southbound.GnmiClient
+	GnmiTimeout     time.Duration
 	AnalyticsClient AnalyticsClient
 }
 
@@ -30,10 +32,10 @@ func (i *Server) GetDevices(ctx echo.Context, target externalRef0.Target, enterp
 	var response interface{}
 	//var err error
 
-	gnmiCtx, cancel := utils.NewGnmiContext(ctx)
+	gnmiCtx, cancel := utils.NewGnmiContext(ctx, i.GnmiTimeout)
 	defer cancel()
 
-	site, err := i.gnmiGetEnterprisesEnterpriseSite(gnmiCtx, "/aether/v2.0.0/{target}/enterprises/enterprise/{enterprise-id}/site/{site-id}", "connectivity-service-v2", enterpriseId, siteId)
+	site, err := i.gnmiGetEnterprisesEnterpriseSite(gnmiCtx, "/aether/v2.0.0/{target}/enterprises/enterprise/{enterprise-id}/site/{site-id}", target, enterpriseId, siteId)
 	//response, err = i.gnmiGetEnterprisesEnterpriseSite(gnmiCtx, "/aether/v2.0.0/{target}/enterprises/enterprise/{enterprise-id}/site/{site-id}", "connectivity-service-v2", enterpriseId, siteId)
 	if err != nil {
 		return utils.ConvertGrpcError(err)
@@ -70,10 +72,10 @@ func (i *Server) GetDevice(ctx echo.Context, target externalRef0.Target, enterpr
 	var response interface{}
 	//var err error
 
-	gnmiCtx, cancel := utils.NewGnmiContext(ctx)
+	gnmiCtx, cancel := utils.NewGnmiContext(ctx, i.GnmiTimeout)
 	defer cancel()
 
-	site, err := i.gnmiGetEnterprisesEnterpriseSite(gnmiCtx, "/aether/v2.0.0/{target}/enterprises/enterprise/{enterprise-id}/site/{site-id}", "connectivity-service-v2", enterpriseId, siteId)
+	site, err := i.gnmiGetEnterprisesEnterpriseSite(gnmiCtx, "/aether/v2.0.0/{target}/enterprises/enterprise/{enterprise-id}/site/{site-id}", target, enterpriseId, siteId)
 	//response, err = i.gnmiGetEnterprisesEnterpriseSite(gnmiCtx, "/aether/v2.0.0/{target}/enterprises/enterprise/{enterprise-id}/site/{site-id}", "connectivity-service-v2", enterpriseId, siteId)
 	if err != nil {
 		return utils.ConvertGrpcError(err)

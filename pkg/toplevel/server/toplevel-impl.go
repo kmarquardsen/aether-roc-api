@@ -14,6 +14,7 @@ import (
 	"github.com/labstack/echo/v4"
 	aether_2_0_0 "github.com/onosproject/aether-roc-api/pkg/aether_2_0_0/server"
 	aether_4_0_0 "github.com/onosproject/aether-roc-api/pkg/aether_4_0_0/server"
+	app_gtwy "github.com/onosproject/aether-roc-api/pkg/app_gtwy/server"
 	externalRef0 "github.com/onosproject/aether-roc-api/pkg/toplevel/types"
 	"github.com/onosproject/onos-api/go/onos/config/diags"
 	"github.com/onosproject/onos-lib-go/pkg/errors"
@@ -23,6 +24,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"time"
 )
 
 // server-interface template override
@@ -153,6 +155,7 @@ func (i *ServerImpl) grpcGetTransactions(ctx context.Context) (*externalRef0.Tra
 // ServerImpl -
 type ServerImpl struct {
 	GnmiClient    southbound.GnmiClient
+	GnmiTimeout   time.Duration
 	ConfigClient  diags.ChangeServiceClient
 	Authorization bool
 }
@@ -163,7 +166,7 @@ func (i *ServerImpl) PatchAetherRocApi(ctx echo.Context) error {
 	var response interface{}
 	var err error
 
-	gnmiCtx, cancel := utils.NewGnmiContext(ctx)
+	gnmiCtx, cancel := utils.NewGnmiContext(ctx, i.GnmiTimeout)
 	defer cancel()
 
 	// Response patched
@@ -188,7 +191,7 @@ func (i *ServerImpl) GetTargets(ctx echo.Context) error {
 	var response interface{}
 	var err error
 
-	gnmiCtx, cancel := utils.NewGnmiContext(ctx)
+	gnmiCtx, cancel := utils.NewGnmiContext(ctx, i.GnmiTimeout)
 	defer cancel()
 
 	// Response GET OK 200
@@ -204,7 +207,7 @@ func (i *ServerImpl) GetTransactions(ctx echo.Context) error {
 	var response interface{}
 	var err error
 
-	gnmiCtx, cancel := utils.NewGnmiContext(ctx)
+	gnmiCtx, cancel := utils.NewGnmiContext(ctx, i.GnmiTimeout)
 	defer cancel()
 
 	// Response GET OK 200
@@ -262,6 +265,14 @@ func (i *ServerImpl) GetAether200Spec(ctx echo.Context) error {
 
 func (i *ServerImpl) GetAether400Spec(ctx echo.Context) error {
 	response, err := aether_4_0_0.GetSwagger()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+	return acceptTypes(ctx, response)
+}
+
+func (i *ServerImpl) GetAetherAppGtwySpec(ctx echo.Context) error {
+	response, err := app_gtwy.GetSwagger()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
