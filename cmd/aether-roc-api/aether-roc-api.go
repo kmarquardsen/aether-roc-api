@@ -36,13 +36,13 @@ func main() {
 	caPath := flag.String("caPath", "", "path to CA certificate")
 	keyPath := flag.String("keyPath", "", "path to client private key")
 	certPath := flag.String("certPath", "", "path to client certificate")
-	gnmiEndpoint := flag.String("gnmiendpoint", "onos-config:5150", "address of onos-config")
-	analyticsEndpoint := flag.String("analyticsendpoint", "localhost:9090", "prometheus address")
+	gnmiEndpoint := flag.String("gnmiEndpoint", "onos-config:5150", "address of onos-config")
+	analyticsEndpoint := flag.String("analyticsEndpoint", "aether-roc-umbrella-prometheus-acc-server:9090", "prometheus address")
 	port := flag.Uint("port", 8181, "http port")
 	validateResp := flag.Bool("validateResp", true, "Validate response are compliant with OpenAPI3 schema")
 	flag.Parse()
 
-	log.Infof("Starting aether-roc-api - connecting to %s", *gnmiEndpoint)
+	log.Infof("Starting aether-roc-api - connecting to %s and %s", *gnmiEndpoint, *analyticsEndpoint)
 
 	opts, err := certs.HandleCertPaths(*caPath, *keyPath, *certPath, true)
 	if err != nil {

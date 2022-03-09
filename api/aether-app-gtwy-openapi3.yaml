@@ -15,8 +15,7 @@ info:
 openapi: 3.0.0
 
 paths:
-#  /aether/app-gtwy/{target}/enterprises/{enterprise-id}/sites/{site-id}/devices:
-  /aether/app-gtwy/enterprises/{enterprise-id}/sites/{site-id}/devices:
+  /appgtwy/v1/{target}/enterprises/{enterprise-id}/sites/{site-id}/devices:
     get:
       operationId: getDevices
       responses:
@@ -30,7 +29,7 @@ paths:
       tags:
         - ""
     parameters:
-#      - $ref: '#/components/parameters/target'
+      - $ref: '#/components/parameters/target'
       - content:
           text/plain; charset=utf-8:
             schema:
@@ -47,8 +46,7 @@ paths:
         in: path
         name: site-id
         required: true
-#  /aether/app-gtwy/{target}/enterprises/{enterprise-id}/sites/{site-id}/devices/{device-id}:
-  /aether/app-gtwy/enterprises/{enterprise-id}/sites/{site-id}/devices/{device-id}:
+  /appgtwy/v1/{target}/enterprises/{enterprise-id}/sites/{site-id}/devices/{device-id}:
     get:
       operationId: getDevice
       responses:
@@ -62,7 +60,7 @@ paths:
       tags:
         - ""
     parameters:
-#      - $ref: '#/components/parameters/target'
+      - $ref: '#/components/parameters/target'
       - content:
           text/plain; charset=utf-8:
             schema:
@@ -88,16 +86,16 @@ paths:
         name: device-id
         required: true
 components:
-#  parameters:
-#    target:
-#      content:
-#        text/plain; charset=utf-8:
-#          schema:
-#            type: string
-#      description: target (device in onos-config)
-#      in: path
-#      name: target
-#      required: true
+  parameters:
+    target:
+      content:
+        text/plain; charset=utf-8:
+          schema:
+            type: string
+      description: target (device in onos-config)
+      in: path
+      name: target
+      required: true
   schemas:
     App_Gtwy_Devices:
 #      additionalProperties:

@@ -5,17 +5,18 @@ package server
 
 import (
 	"github.com/labstack/echo/v4"
+	externalRef0 "github.com/onosproject/aether-roc-api/pkg/aether_2_0_0/types"
 	"github.com/onosproject/aether-roc-api/pkg/middleware/openapi3mw"
 )
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 	// GET /enterprises/{enterprise-id}/site/{site-id}/devices
-	// (GET /aether/app-gtwy/enterprises/{enterprise-id}/sites/{site-id}/devices)
-	GetDevices(ctx echo.Context, enterpriseId string, siteId string) error
+	// (GET /appgtwy/v1/{target}/enterprises/{enterprise-id}/sites/{site-id}/devices)
+	GetDevices(ctx echo.Context, target externalRef0.Target, enterpriseId string, siteId string) error
 	// GET /enterprises/{enterprise-id}/sites/{site-id}/devices/{device-id}
-	// (GET /aether/app-gtwy/enterprises/{enterprise-id}/sites/{site-id}/devices/{device-id})
-	GetDevice(ctx echo.Context, enterpriseId string, siteId string, deviceId string) error
+	// (GET /appgtwy/v1/{target}/enterprises/{enterprise-id}/sites/{site-id}/devices/{device-id})
+	GetDevice(ctx echo.Context, target externalRef0.Target, enterpriseId string, siteId string, deviceId string) error
 }
 
 // serverInterfaceWrapper converts echo contexts to parameters.
@@ -25,6 +26,11 @@ type serverInterfaceWrapper struct {
 
 // GetDevices converts echo context to params.
 func (w *serverInterfaceWrapper) GetDevices(ctx echo.Context) error {
+
+	// ------------- Path parameter "target" -------------
+
+	var target externalRef0.Target
+	target = externalRef0.Target(ctx.Param("target"))
 
 	// ------------- Path parameter "enterprise-id" -------------
 
@@ -37,11 +43,16 @@ func (w *serverInterfaceWrapper) GetDevices(ctx echo.Context) error {
 	siteId = ctx.Param("site-id")
 
 	// Invoke the callback with all the unmarshalled arguments
-	return w.handler.GetDevices(ctx, enterpriseId, siteId)
+	return w.handler.GetDevices(ctx, target, enterpriseId, siteId)
 }
 
 // GetDevice converts echo context to params.
 func (w *serverInterfaceWrapper) GetDevice(ctx echo.Context) error {
+
+	// ------------- Path parameter "target" -------------
+
+	var target externalRef0.Target
+	target = externalRef0.Target(ctx.Param("target"))
 
 	// ------------- Path parameter "enterprise-id" -------------
 
@@ -59,7 +70,7 @@ func (w *serverInterfaceWrapper) GetDevice(ctx echo.Context) error {
 	deviceId = ctx.Param("device-id")
 
 	// Invoke the callback with all the unmarshalled arguments
-	return w.handler.GetDevice(ctx, enterpriseId, siteId, deviceId)
+	return w.handler.GetDevice(ctx, target, enterpriseId, siteId, deviceId)
 }
 
 // This is a simple interface which specifies echo.Route addition functions which
@@ -88,8 +99,8 @@ func RegisterHandlers(router EchoRouter, si ServerInterface, validateResponse bo
 		handler: si,
 	}
 
-	router.GET("/aether/app-gtwy/enterprises/:enterprise-id/sites/:site-id/devices", wrapper.GetDevices, openapi3mw.ValidateOpenapi3(openApiDefinition))
-	router.GET("/aether/app-gtwy/enterprises/:enterprise-id/sites/:site-id/devices/:device-id", wrapper.GetDevice, openapi3mw.ValidateOpenapi3(openApiDefinition))
+	router.GET("/appgtwy/v1/:target/enterprises/:enterprise-id/sites/:site-id/devices", wrapper.GetDevices, openapi3mw.ValidateOpenapi3(openApiDefinition))
+	router.GET("/appgtwy/v1/:target/enterprises/:enterprise-id/sites/:site-id/devices/:device-id", wrapper.GetDevice, openapi3mw.ValidateOpenapi3(openApiDefinition))
 
 	return nil
 }

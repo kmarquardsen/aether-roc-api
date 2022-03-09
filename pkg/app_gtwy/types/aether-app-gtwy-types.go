@@ -37,3 +37,6 @@ type AppGtwyDevices struct {
 	// List of app gateway devices
 	Devices *[]AppGtwyDevice `json:"devices,omitempty"`
 }
+
+// target (device in onos-config)
+type Target string
